@@ -3,9 +3,10 @@ package model
 import (
 	"fmt"
 	"github.com/88250/lute/editor"
-	"github.com/jinzhu/gorm"
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"github.com/panjf2000/ants"
+	"gorm.io/gorm"
 	"regexp"
 	"strings"
 	"sync"
@@ -30,9 +31,9 @@ type SibilingArticle struct {
 
 // Article 文章表
 type Article struct {
-	ID        string `gorm:"type:uuid;primary_key;default:uuid_generate_v4()"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        string    `gorm:"primary_key"`
+	CreatedAt time.Time `gorm:"column:created_at;index;" json:"created_at,omitempty"`
+	UpdatedAt time.Time `gorm:"column:updated_at;index;" json:"updated_at,omitempty"`
 
 	Slug       string         `form:"slug" validate:"required" gorm:"unique_index"`
 	Title      string         `form:"title" validate:"required"`
@@ -40,7 +41,7 @@ type Article struct {
 	TemplateID byte           `form:"template" validate:"required"`
 	IsBook     bool           `form:"is_book"`
 	RawTags    string         `form:"tags" gorm:"-"`
-	Tags       pq.StringArray `gorm:"index;type:varchar(255)[]" validate:"-" form:"-"`
+	Tags       pq.StringArray `gorm:"type:json" validate:"-" form:"-"`
 	ReadNum    uint           `gorm:"default:0;"`
 	CommentNum uint           `gorm:"default:0;"`
 	Version    uint           `gorm:"default:1;"`
@@ -49,7 +50,7 @@ type Article struct {
 
 	Comments         []*Comment
 	ArticleHistories []*ArticleHistory
-	Toc              []*ArticleTOC
+	Toc              []*ArticleTOC    `gorm:"-" validate:"-" form:"-"`
 	Chapters         []*Article       `gorm:"foreignkey:BookRefer" form:"-" validate:"-"`
 	Book             *Article         `gorm:"-" validate:"-" form:"-"`
 	SibilingArticle  *SibilingArticle `gorm:"-" validate:"-" form:"-"`
@@ -70,14 +71,21 @@ func (t *Article) GetIndexID() string {
 	return fmt.Sprintf("%s.%d", t.ID, t.Version)
 }
 
+func (t *Article) BeforeCreate(tx *gorm.DB) error {
+	t.ID = uuid.New().String()
+	return nil
+}
+
 // BeforeSave hook
-func (t *Article) BeforeSave() {
+func (t *Article) BeforeSave(tx *gorm.DB) error {
 	t.Tags = strings.Split(t.RawTags, ",")
+	return nil
 }
 
 // AfterFind hook
-func (t *Article) AfterFind() {
+func (t *Article) AfterFind(tx *gorm.DB) error {
 	t.RawTags = strings.Join(t.Tags, ",")
+	return nil
 }
 
 var titleRegex = regexp.MustCompile(`^\s{0,2}(#{1,6})\s(.*)$`)

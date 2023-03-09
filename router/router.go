@@ -1,63 +1,19 @@
 package router
 
 import (
+	"BeanBlog/pkg/blog"
 	"BeanBlog/pkg/trans"
-	"BeanBlog/tools/blog"
 	gv "github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/template/html"
-	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
-	"strings"
 	"sync"
-	"time"
 )
 
 var validator = gv.New()
 
-func RegisterRoutes(engine *html.Engine) *fiber.App {
-	dbErrors := map[error]bool{
-		gorm.ErrCantStartTransaction: true,
-		gorm.ErrInvalidSQL:           true,
-		gorm.ErrInvalidTransaction:   true,
-		gorm.ErrUnaddressable:        true,
-	}
-	app := fiber.New(fiber.Config{
-		EnableTrustedProxyCheck: blog.System.Config.EnableTrustedProxyCheck,
-		TrustedProxies:          blog.System.Config.TrustedProxies,
-		ProxyHeader:             blog.System.Config.ProxyHeader,
-		Views:                   engine,
-		ErrorHandler: func(c *fiber.Ctx, e error) error {
-			// 404 页面
-			if e == gorm.ErrRecordNotFound {
-				return page404(c)
-			}
-			title := "Unknown error"
-			errMsg := e.Error()
-			if dbErrors[e] {
-				title = "DB error"
-				errMsg = "Please contact the webmaster"
-			}
-			if strings.Contains(string(c.Request().Header.Peek("Accept")), "html") {
-				return c.Status(http.StatusInternalServerError).Render("default/error", injectSiteData(c, fiber.Map{
-					"title": title,
-					"msg":   errMsg,
-				}))
-			}
-			_, e = c.Status(http.StatusInternalServerError).WriteString(errMsg)
-			return e
-		},
-	})
-	if blog.System.Config.Debug {
-		app.Use(logger.New())
-		engine.Reload(true)
-		engine.Debug(true)
-	}
-	app.Use(auth)
-
-	//app.Get("/", index)
+func RegisterRoutes(app *fiber.App) {
+	//app.Get("/", page404)
 	//app.Get("/feed/:format?", feedHandler)
 	//app.Get("/archives/:page?", archive)
 	//app.Get("/search/", search)
@@ -71,8 +27,8 @@ func RegisterRoutes(engine *html.Engine) *fiber.App {
 	//app.Static("/static", "resource/static")
 	//app.Static("/upload", "data/upload")
 
-	admin := app.Group("/admin", loginRequired)
-	admin.Get("/", manager)
+	//admin := app.Group("/admin", loginRequired)
+	//admin.Get("/", manager)
 	//admin.Get("/publish", publish)
 	//admin.Post("/publish", publishHandler)
 	//admin.Get("/rebuild-full-text-search", rebuildFullTextSearch)
@@ -91,18 +47,6 @@ func RegisterRoutes(engine *html.Engine) *fiber.App {
 	//admin.Patch("/tags", renameTag)
 
 	app.Use(page404)
-
-	return app
-}
-
-func auth(c *fiber.Ctx) error {
-	token := c.Cookies(blog.AuthCookie)
-	if len(token) > 0 && token == blog.System.Config.User.Token && blog.System.Config.User.TokenExpires > time.Now().Unix() {
-		c.Locals(blog.CtxAuthorized, true)
-	} else {
-		c.Locals(blog.CtxAuthorized, false)
-	}
-	return c.Next()
 }
 
 func page404(c *fiber.Ctx) error {

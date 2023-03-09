@@ -2,12 +2,17 @@ package server
 
 import (
 	"BeanBlog/internal/model"
+	"BeanBlog/pkg/blog"
+	"BeanBlog/pkg/log"
+	"BeanBlog/pkg/middleware"
 	"BeanBlog/router"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/88250/lute"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html"
 	"github.com/microcosm-cc/bluemonday"
 	"html/template"
@@ -28,11 +33,29 @@ func init() {
 }
 
 func Serve(endRun chan error) {
+	// 初始化全局log
+	log.InitLogger(&blog.System.Config.Log, "BeanBlog")
+
 	engine := html.New("resource/theme", ".html")
 	setFuncMap(engine)
-	app := router.RegisterRoutes(engine)
+	app := fiber.New(fiber.Config{
+		EnableTrustedProxyCheck: blog.System.Config.EnableTrustedProxyCheck,
+		TrustedProxies:          blog.System.Config.TrustedProxies,
+		ProxyHeader:             blog.System.Config.ProxyHeader,
+		Views:                   engine,
+	})
+	// 注册全局中间件
+	app.Use(
+		middleware.AuthAdmin,
+	)
 
-	//app.Get("/:slug/:version?", article)
+	if blog.System.Config.Debug {
+		app.Use(logger.New())
+		engine.Reload(true)
+		engine.Debug(true)
+	}
+	// 注册路由
+	router.RegisterRoutes(app)
 
 	go func() {
 		endRun <- app.Listen(":8080")
@@ -87,4 +110,3 @@ func mdRender(id string, raw string) string {
 func ugcPolicy(raw string) string {
 	return bluemondayPolicy.Sanitize(raw)
 }
-

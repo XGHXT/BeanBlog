@@ -2,11 +2,11 @@ package blog
 
 import (
 	"BeanBlog/internal/config"
-	"github.com/jinzhu/gorm"
 	"github.com/panjf2000/ants"
 	"github.com/patrickmn/go-cache"
 	"go.uber.org/dig"
 	"golang.org/x/sync/singleflight"
+	"gorm.io/gorm"
 )
 
 const (
@@ -20,6 +20,11 @@ const (
 	CacheKeyPrefixRelatedArticle = "ckpra"
 	// CacheKeyPrefixRelatedSiblingArticle 缓存键前缀：相邻文章
 	CacheKeyPrefixRelatedSiblingArticle = "ckprsa"
+	// RequestId 请求id名称
+	RequestId = "request_id"
+	// TimeLayout 时间格式
+	TimeLayout   = "2006-01-02 15:04:05"
+	TimeLayoutMs = "2006-01-02 15:04:05.000"
 )
 
 // SysVariable 全局变量

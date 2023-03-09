@@ -9,10 +9,10 @@ import (
 type ArticleHistory struct {
 	ArticleID string `gorm:"type:uuid;index"`
 	Article   Article
-	Version   uint   `gorm:"index"`
-	Desc      string `gorm:"text"`
-	Content   string `gorm:"text"`
-	CreatedAt time.Time
+	Version   uint      `gorm:"index"`
+	Desc      string    `gorm:"text"`
+	Content   string    `gorm:"text"`
+	CreatedAt time.Time `gorm:"column:created_at;index;" json:"created_at,omitempty"`
 }
 
 // GetIndexID get index data id

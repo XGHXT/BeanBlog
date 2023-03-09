@@ -14,6 +14,19 @@ type Menu struct {
 	Black bool
 }
 
+// LogConfig 日志配置
+type LogConfig struct {
+	Level      string
+	FileName   string
+	TimeFormat string
+	MaxSize    int
+	MaxBackups int
+	MaxAge     int
+	Compress   bool
+	LocalTime  bool
+	Console    bool
+}
+
 // Config 系统配置
 type Config struct {
 	Debug bool
@@ -48,6 +61,8 @@ type Config struct {
 
 	User           model.User
 	ConfigFilePath string
+
+	Log LogConfig
 }
 
 // Save ..
