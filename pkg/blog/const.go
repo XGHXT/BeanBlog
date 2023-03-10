@@ -11,7 +11,7 @@ import (
 
 const (
 	// CtxAuthorized 用户已认证
-	CtxAuthorized = "cazed"
+	CtxAuthorized = "bean_auth"
 	// AuthCookie 用户认证使用的Cookie名
 	AuthCookie = "bean_bean"
 	// CacheKeyPrefixRelatedChapters 缓存键前缀：章节

@@ -1,6 +1,6 @@
 module BeanBlog
 
-go 1.20
+go 1.19
 
 require (
 	github.com/88250/lute v1.7.5
@@ -16,6 +16,7 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	go.uber.org/dig v1.16.1
 	go.uber.org/zap v1.17.0
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 	golang.org/x/sync v0.1.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v3 v3.0.1

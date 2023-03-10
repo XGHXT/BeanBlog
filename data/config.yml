@@ -1,0 +1,65 @@
+debug: true
+enabletrustedproxycheck: false
+trustedproxies:
+    - 192.168.1.1
+proxyheader: X-Forwarded-For
+wxpusherapptoken: ""
+wxpusheruid: ""
+database:
+akismet: ""
+email:
+    host: ""
+    port: 8080
+    user: ""
+    pass: ""
+    ssl: false
+site:
+    spacename: Solitudes
+    spacedesc: We love writing
+    spacekeywords: ""
+    hometopcontent: "# Top:\n\nA fast, simple & powerful blog framework \U0001F44D\n"
+    homebottomcontent: "# Bottom:\n\nA fast, simple & powerful blog framework \U0001F44D\n"
+    domain: ""
+    theme: white
+    headermenus:
+        - name: Home
+          link: /
+          icon: ""
+          black: false
+        - name: Archives
+          link: /archives/
+          icon: ""
+          black: false
+        - name: About
+          link: /about
+          icon: fa fa-lightbulb
+          black: false
+        - name: Solitudes
+          link: https://github.com/naiba/solitudes
+          icon: fab fa-github
+          black: true
+    footermenus:
+        - name: Home
+          link: /
+          icon: ""
+          black: false
+        - name: About
+          link: /about
+          icon: far fa-lightbulb
+          black: false
+user:
+    email:
+    nickname:
+    password: $2a$10$qXMp0vfCL2rdhYGr7VT7NuJLEMysmO.EsGAfgQGtMupITe7ZNbi86
+    token: $2a$10$1RKZvo9TkYrmI9loiPwKyu9QxYY8LFZMuhb93y5qT7q3KP9HA4iv2
+    tokenexpires: 1678439663
+configfilepath: data/config.yml
+log:
+    level: debug
+    filename: log/app.log
+    timeformat: "2006-01-02 15:04:05.000"
+    maxsize: 500
+    maxbackups: 7
+    maxage: 7
+    compress: true
+    logtype: daily

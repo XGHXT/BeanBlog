@@ -46,7 +46,7 @@ func newDatabase(conf *config.Config) *gorm.DB {
 }
 
 func newConfig() *config.Config {
-	configFile := "data/conf.yml"
+	configFile := "data/config.yml"
 	content, err := os.ReadFile(configFile)
 	if err != nil {
 		panic(err)

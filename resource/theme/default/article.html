@@ -1,0 +1,292 @@
+{{define "default/article"}}
+{{template "default/header" .}}
+<div id="header-post">
+    <span id="menu-icon"><i class="fas fa-bars fa-lg"></i></span>
+    <span id="menu-icon-tablet"><i class="fas fa-bars fa-lg"></i></span>
+    <span id="top-icon-tablet" onclick="scrollToTop(this)" style="display:none;"><i
+            class="fas fa-chevron-up fa-lg"></i></span>
+    <span id="menu">
+        <span id="nav">
+            <ul>
+                {{range .Conf.Site.HeaderMenus}}
+                <li><a href="{{.Link}}" {{if .Black}} target="_blank" {{end}}>{{if .Icon}}<i class="{{.Icon}}"></i>
+                        {{end}}{{.Name}}</a></li>
+                {{end}}
+            </ul>
+        </span>
+        <br>
+        <span id="actions">
+            <ul>
+                {{if .Data.article.SibilingArticle.Prev}}
+                <li><a class="icon" href="/{{.Data.article.SibilingArticle.Prev.Slug}}"
+                        title="{{.Data.article.SibilingArticle.Prev.Title}}"><i class="fas fa-chevron-left"
+                            aria-hidden="true" onmouseover="toggle('#i-prev')" onmouseout="toggle('#i-prev')"></i></a>
+                </li>
+                {{end}}
+                {{if .Data.article.SibilingArticle.Next}}
+                <li><a class="icon" href="/{{.Data.article.SibilingArticle.Next.Slug}}"
+                        title="{{.Data.article.SibilingArticle.Next.Title}}"><i class="fas fa-chevron-right"
+                            aria-hidden="true" onmouseover="toggle('#i-next')" onmouseout="toggle('#i-next')"></i></a>
+                </li>
+                {{end}}
+                <li><span class="icon">
+                        <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="toggle('#i-top')"
+                            onmouseout="toggle('#i-top')" onclick="scrollToTop(this)"></i></span></li>
+                <li><span class="icon"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="toggle('#i-share')"
+                            onmouseout="toggle('#i-share')" onclick="toggle('#share');return false;"></i></span></li>
+            </ul>
+            <span id="i-prev" class="info" style="display:none;">{{.Tr.T "previous_post"}}</span>
+            <span id="i-next" class="info" style="display:none;">{{.Tr.T "next_post"}}</span>
+            <span id="i-top" class="info" style="display:none;">{{.Tr.T "return_top"}}</span>
+            <span id="i-share" class="info" style="display:none;">{{.Tr.T "share"}}</span>
+        </span>
+        <br>
+        <div id="share" style="display: none">
+            <ul>
+                <li><a class="icon"
+                        href="http://www.facebook.com/sharer.php?u=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}"><i
+                            class="fab fa-facebook " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="https://twitter.com/share?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;text={{.Data.article.Title}}"><i
+                            class="fab fa-twitter " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="http://www.linkedin.com/shareArticle?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;title={{.Data.article.Title}}"><i
+                            class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="https://pinterest.com/pin/create/bookmarklet/?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;is_video=false&amp;description={{.Data.article.Title}}"><i
+                            class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="mailto:?subject={{.Data.article.Title}}&amp;body=Check out this article: https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}"><i
+                            class="fas fa-envelope " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="https://getpocket.com/save?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;title={{.Data.article.Title}}"><i
+                            class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="http://reddit.com/submit?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;title={{.Data.article.Title}}"><i
+                            class="fab fa-reddit " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="http://www.tumblr.com/share/link?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;name={{.Data.article.Title}}&amp;description="><i
+                            class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+            </ul>
+        </div>
+        <div id="toc">
+            <ol class="toc">
+                {{template "default/article_title_item" .Data.article.Toc}}
+            </ol>
+        </div>
+    </span>
+</div>
+<div class="content index py4">
+    <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header>
+            <h1 class="posttitle" itemprop="name headline">
+                {{.Data.article.Title}}
+            </h1>
+            <div class="meta">
+                <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+                    <span itemprop="name">{{.Conf.User.Nickname}}</span>
+                </span>
+                <div class="postdate">
+                    <time datetime="{{.Data.article.CreatedAt}}" itemprop="datePublished">{{tf .Data.article.CreatedAt
+                        (.Tr.T "date_format")}}</time>
+                    <small>·v{{.Data.article.Version}}</small>
+                    {{if .Data.article.ReadNum}}
+                    |
+                    <span>👀{{.Data.article.ReadNum}}{{if .Data.article.CommentNum}},💬{{.Data.article.CommentNum}}{{end}}</span>
+                    {{end}}
+                </div>
+                {{if .Data.article.RawTags}}
+                <div class="article-tag">
+                    {{range $k,$v:=.Data.article.Tags}}
+                    {{if $v}}{{if eq $k 0}}<i class="fas fa-tag"></i> {{end}}<a class="tag-link"
+                        href="/tags/{{$v}}/">{{$v}}</a>{{if not (last $k $.Data.article.Tags)}},{{end}}{{end}}
+                    {{end}}
+                </div>
+                {{end}}
+                {{if .Login}}
+                <a href="/admin/publish?id={{.Data.article.ID}}">[edit]</a>
+                {{end}}
+            </div>
+        </header>
+        <div class="content" itemprop="articleBody">
+            {{if .Data.article.NewVersion}}<p>{{.Tr.T "has_new_version" (.Data.article.Slug)|unsafe}}</p>{{end}}
+            {{(md (.Data.article|articleIdx) .Data.article.Content)|unsafe}}
+            {{if .Data.article.IsBook}}
+            <h4>{{.Tr.T "chapters"}}</h4>
+            {{template "default/article_chapters" .Data.article}}
+            {{end}}
+        </div>
+        {{if .Data.article.Book}}
+        <footer>
+            {{.Tr.T "book"}}::<a href="/{{.Data.article.Book.Slug}}"><b>{{.Data.article.Book.Title}}</b></a> -
+            {{.Tr.T "chapters"}}
+            <ul>
+                {{if .Data.article.SibilingArticle.Prev.ID}}<li>Prev: <a
+                        href="/{{.Data.article.SibilingArticle.Prev.Slug}}">{{.Data.article.SibilingArticle.Prev.Title}}</a>
+                </li>
+                {{end}}
+                <li>{{.Data.article.Title}}</li>
+                {{if .Data.article.SibilingArticle.Next.ID}}<li>Next: <a
+                        href="/{{.Data.article.SibilingArticle.Next.Slug}}">{{.Data.article.SibilingArticle.Next.Title}}</a>
+                </li>
+                {{end}}
+            </ul>
+        </footer>
+        {{end}}
+    </article>
+
+    <div id="reply-list">
+        <h1>{{.Tr.T "comments"}}</h1>
+        {{template "default/comments_entry" .Data.article.Comments}}
+    </div>
+    {{if .Data.article.Comments}}
+    <div class="pagination">
+        {{if gt .Data.comment_page.Page 1}}<a
+            href="/{{.Data.article.Slug}}?comment_page={{.Data.comment_page.PrevPage}}"><i
+                class="fas fa-angle-left"></i></a>{{end}}
+        <span class="page-number">{{.Tr.T "pagination" (int2str .Data.comment_page.Page) (int2str .Data.comment_page.TotalPage) (int2str .Data.comment_page.TotalRecord) "comments"}}</span>
+        {{if and (gt .Data.comment_page.NextPage 1) (lt .Data.comment_page.Page .Data.comment_page.TotalPage)}}<a
+            href="/{{.Data.article.Slug}}?comment_page={{.Data.comment_page.NextPage}}"><i
+                class="fas fa-angle-right"></i></a>{{end}}
+    </div>
+    {{end}}
+    <div id="reply">
+        <textarea cols="40" rows="6" id="id_content"
+            placeholder='{{.Tr.T "may_not_reply_if_email_not_exist"}}'></textarea>
+        {{if .Login}}
+        <input type="hidden" maxlength="64" id="id_nickname">
+        {{else}}
+        <div class="row">
+            <input placeholder='{{.Tr.T "nickname"}}' maxlength="64" id="id_nickname">
+            <input placeholder='{{.Tr.T "email"}} ({{.Tr.T "not_required"}})' maxlength="254" id="id_email">
+            <input placeholder='{{.Tr.T "website"}} ({{.Tr.T "not_required"}})' maxlength="200" id="id_website">
+        </div>
+        {{end}}
+        <button onclick="comment(this)" class="base-button">{{.Tr.T "submit"}}</button>
+        <input type="hidden" value="{{.Data.article.Slug}}" id="id_slug">
+        <input type="hidden" id="id_reply_to" value="">
+    </div>
+
+    <div id="footer-post-container">
+        <div id="footer-post">
+            <div id="nav-footer" style="display: none">
+                <ul>
+                    {{range .Conf.Site.HeaderMenus}}
+                    <li><a href="{{.Link}}" {{if .Black}} target="_blank" {{end}}>{{if .Icon}}<i class="{{.Icon}}"></i>
+                            {{end}}{{.Name}}</a></li>
+                    {{end}}
+                </ul>
+            </div>
+
+            <div id="toc-footer" style="display: none">
+                <ol class="toc">
+                    {{template "default/article_title_item" .Data.article.Toc}}
+                </ol>
+            </div>
+
+            <div id="share-footer" style="display: none">
+                <ul>
+                    <li><a class="icon"
+                            href="http://www.facebook.com/sharer.php?u=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}"><i
+                                class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+                    <li><a class="icon"
+                            href="https://twitter.com/share?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;text={{.Data.article.Title}}"><i
+                                class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+                    <li><a class="icon"
+                            href="http://www.linkedin.com/shareArticle?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;title={{.Data.article.Title}}"><i
+                                class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+                    <li><a class="icon"
+                            href="https://pinterest.com/pin/create/bookmarklet/?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;is_video=false&amp;description={{.Data.article.Title}}"><i
+                                class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+                    <li><a class="icon"
+                            href="mailto:?subject={{.Data.article.Title}}&amp;body=Check out this article: https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}"><i
+                                class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+                    <li><a class="icon"
+                            href="https://getpocket.com/save?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;title={{.Data.article.Title}}"><i
+                                class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+                    <li><a class="icon"
+                            href="http://reddit.com/submit?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;title={{.Data.article.Title}}"><i
+                                class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+                    <li><a class="icon"
+                            href="http://www.tumblr.com/share/link?url=https://{{.Conf.Site.Domain}}/{{.Data.article.Slug}}&amp;name={{.Data.article.Title}}&amp;description="><i
+                                class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+                </ul>
+            </div>
+
+            <div id="actions-footer">
+                <span id="menu" class="icon" onclick="toggle('#nav-footer');return false;"><i class="fas fa-bars fa-lg"
+                        aria-hidden="true"></i> {{.Tr.T "menu"}}</span>
+                <span id="toc" class="icon" onclick="toggle('#toc-footer');return false;"><i class="fas fa-list fa-lg"
+                        aria-hidden="true"></i> {{.Tr.T "toc"}}</span>
+                <span id="share" class="icon" onclick="toggle('#share-footer');return false;"><i
+                        class="fas fa-share-alt fa-lg" aria-hidden="true"></i> {{.Tr.T "share"}}</span>
+                <span id="top" style="display:none" class="icon" onclick="scrollToTop(this)"><i
+                        class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> {{.Tr.T "return_top"}}</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.onload = function () {
+            fetch("/count?action=article&slug={{.Data.article.Slug}}", { method: "POST" })
+            document.querySelector("#id_nickname").value = localStorage.getItem("cm_nickname") || '{{if .Login}}{{.Conf.User.Nickname}}{{end}}'
+            if (document.querySelector("#id_email")) {
+                document.querySelector("#id_email").value = localStorage.getItem("cm_email") || ''
+            }
+            if (document.querySelector("#id_website")) {
+                document.querySelector("#id_website").value = localStorage.getItem("cm_website") || ''
+            }
+        }
+
+        function reply_to(cid, nickname) {
+            const idContent = document.querySelector("#id_content");
+            idContent.value = '@' + nickname + ' ' + idContent.value;
+            document.querySelector("#id_reply_to").value = cid
+        }
+
+        function comment(btn) {
+            if (!document.querySelector("#id_nickname").value || !document.querySelector("#id_content").value) {
+                alert('nickname & content is required.')
+                return
+            }
+            const cm_nickname = document.querySelector('#id_nickname') ? document.querySelector('#id_nickname').value : "";
+            const cm_email = document.querySelector('#id_email') ? document.querySelector('#id_email').value : "";
+            const cm_website = document.querySelector('#id_website') ? document.querySelector('#id_website').value : "";
+            localStorage.setItem("cm_nickname", cm_nickname)
+            localStorage.setItem("cm_email", cm_email)
+            localStorage.setItem("cm_website", cm_website)
+            btn.value = "Submiting ..."
+            var data = {
+                nickname: cm_nickname,
+                email: cm_email,
+                website: cm_website,
+                content: document.querySelector('#id_content').value,
+                version: parseInt('{{.Data.article.Version}}'),
+                slug: document.querySelector('#id_slug').value,
+            }
+            if (document.querySelector('#id_reply_to').value) {
+                data.reply_to = document.querySelector('#id_reply_to').value
+            }
+            fetch("/comment", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(resp => {
+                if (resp.status == 200) {
+                    window.location.reload()
+                    return
+                }
+                resp.text().then(str => {
+                    alert("Submit faile: " + str)
+                    btn.value = "Submit"
+                })
+            }).catch(e => {
+                alert("Submit faile: " + e)
+                btn.value = "Submit"
+            })
+        }
+    </script>
+    {{template "default/footer" .}}
+    {{end}}

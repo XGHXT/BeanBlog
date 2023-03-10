@@ -34,8 +34,8 @@ func init() {
 
 func Serve(endRun chan error) {
 	// 初始化全局log
-	log.InitLogger(&blog.System.Config.Log, "BeanBlog")
-
+	log.InitLogger(&blog.System.Config.Log)
+	log.Info("ok")
 	engine := html.New("resource/theme", ".html")
 	setFuncMap(engine)
 	app := fiber.New(fiber.Config{
@@ -58,7 +58,7 @@ func Serve(endRun chan error) {
 	router.RegisterRoutes(app)
 
 	go func() {
-		endRun <- app.Listen(":8080")
+		endRun <- app.Listen(":8090")
 	}()
 }
 

@@ -19,16 +19,17 @@ func RegisterRoutes(app *fiber.App) {
 	//app.Get("/search/", search)
 	//app.Get("/tags/:tag/:page?", tags)
 	//app.Get("/tags/", tagsCloud)
-	//app.Get("/login", guestRequired, login)
-	//app.Post("/login", guestRequired, loginHandler)
+
+	app.Get("/login", guestRequired, login)
+	app.Post("/login", guestRequired, loginHandler)
 	//app.Post("/logout", loginRequired, logoutHandler)
 	//app.Post("/count", count)
 	//app.Post("/comment", commentHandler)
 	//app.Static("/static", "resource/static")
 	//app.Static("/upload", "data/upload")
 
-	//admin := app.Group("/admin", loginRequired)
-	//admin.Get("/", manager)
+	admin := app.Group("/admin", loginRequired)
+	admin.Get("/", manager)
 	//admin.Get("/publish", publish)
 	//admin.Post("/publish", publishHandler)
 	//admin.Get("/rebuild-full-text-search", rebuildFullTextSearch)
@@ -47,6 +48,14 @@ func RegisterRoutes(app *fiber.App) {
 	//admin.Patch("/tags", renameTag)
 
 	app.Use(page404)
+}
+
+func guestRequired(c *fiber.Ctx) error {
+	if c.Locals(blog.CtxAuthorized).(bool) {
+		c.Redirect("/admin/", http.StatusFound)
+		return nil
+	}
+	return c.Next()
 }
 
 func page404(c *fiber.Ctx) error {

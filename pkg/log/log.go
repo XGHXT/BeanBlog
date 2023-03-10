@@ -3,352 +3,221 @@ package log
 import (
 	"BeanBlog/internal/config"
 	"BeanBlog/pkg/blog"
-	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+	"strings"
+	"time"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"os"
-	"sync"
-	"time"
 )
 
-var (
-	_logger *logger
-	once    sync.Once
-)
+// Logger 全局 Logger 对象
+var Logger *zap.Logger
 
-type logger struct {
-	cfg    *config.LogConfig
-	sugar  *zap.SugaredLogger
-	_level zapcore.Level
+// InitLogger 日志初始化
+func InitLogger(config *config.LogConfig) {
+	// 获取日志写入介质
+	writeSyncer := getLogWriter(config.FileName, config.MaxSize, config.MaxBackups, config.MaxAge, config.Compress, config.LogType)
+
+	// 设置日志等级
+	logLevel := new(zapcore.Level)
+	if err := logLevel.UnmarshalText([]byte(config.Level)); err != nil {
+		fmt.Println("日志初始化错误，日志级别设置有误")
+	}
+
+	// 初始化 core
+	core := zapcore.NewCore(getEncoder(), writeSyncer, logLevel)
+
+	// 初始化 Logger
+	Logger = zap.New(core,
+		zap.AddCaller(),                   // 调用文件和行号，内部使用 runtime.Caller
+		zap.AddCallerSkip(1),              // 封装了一层，调用文件去除一层(runtime.Caller(1))
+		zap.AddStacktrace(zap.ErrorLevel), // Error 时才会显示 stacktrace
+	)
+
+	// 将自定义的 logger 替换为全局的 logger
+	// zap.L().Fatal() 调用时，就会使用我们自定的 Logger
+	zap.ReplaceGlobals(Logger)
 }
 
-// InitLogger 初始化日志配置
-func InitLogger(_cfg *config.LogConfig, appName string) {
-	once.Do(func() {
-		_logger = &logger{
-			cfg: _cfg,
-		}
-		lumber := _logger.newLumber()
-		writeSyncer := zapcore.NewMultiWriteSyncer(zapcore.AddSync(lumber))
-		sugar := zap.New(_logger.newCore(writeSyncer),
-			zap.ErrorOutput(writeSyncer),
-			zap.AddCaller(),
-			zap.AddCallerSkip(1),
-			zap.Fields(zap.String("appName", appName))).
-			Sugar()
+// getEncoder 设置日志存储格式
+func getEncoder() zapcore.Encoder {
 
-		_logger.sugar = sugar
-	})
-}
-
-func (l *logger) newCore(ws zapcore.WriteSyncer) zapcore.Core {
-	// 默认日志级别
-	atomicLevel := zap.NewAtomicLevel()
-	defaultLevel := zapcore.DebugLevel
-	// 会解码传递的日志级别，生成新的日志级别
-	_ = (&defaultLevel).UnmarshalText([]byte(l.cfg.Level))
-	atomicLevel.SetLevel(defaultLevel)
-	l._level = defaultLevel
-
-	// encoder 这部分没有放到配置文件，因为一般配置一次就不会改动
-	encoder := zapcore.EncoderConfig{
-		MessageKey:     "msg",
-		LevelKey:       "level",
+	// 日志格式规则
+	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
+		LevelKey:       "level",
 		NameKey:        "logger",
 		CallerKey:      "caller",
-		StacktraceKey:  "stack",
-		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.CapitalColorLevelEncoder,
-		EncodeTime:     l.customTimeEncoder,
-		EncodeDuration: zapcore.StringDurationEncoder,
-		EncodeCaller:   zapcore.ShortCallerEncoder,
-		EncodeName:     zapcore.FullNameEncoder,
+		FunctionKey:    zapcore.OmitKey,
+		MessageKey:     "message",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding,      // 每行日志的结尾添加 "\n"
+		EncodeLevel:    zapcore.CapitalLevelEncoder,    // 日志级别名称大写，如 ERROR、INFO
+		EncodeTime:     customTimeEncoder,              // 时间格式，我们自定义为 2006-01-02 15:04:05
+		EncodeDuration: zapcore.SecondsDurationEncoder, // 执行时间，以秒为单位
+		EncodeCaller:   zapcore.ShortCallerEncoder,     // Caller 短格式，如：types/converter.go:17，长格式为绝对路径
 	}
-	var writeSyncer zapcore.WriteSyncer
-	if l.cfg.Console {
-		writeSyncer = zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout))
+
+	// 本地环境配置
+	if blog.System.Config.Debug {
+		// 本地设置内置的 Console 解码器（支持 stacktrace 换行）
+		return zapcore.NewConsoleEncoder(encoderConfig)
+	}
+
+	// 线上环境使用 JSON 编码器
+	return zapcore.NewJSONEncoder(encoderConfig)
+}
+
+// customTimeEncoder 自定义友好的时间格式
+func customTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendString(t.Format("2006-01-02 15:04:05"))
+}
+
+// getLogWriter 日志记录介质。Gohub 中使用了两种介质，os.Stdout 和文件
+func getLogWriter(filename string, maxSize, maxBackup, maxAge int, compress bool, logType string) zapcore.WriteSyncer {
+
+	// 如果配置了按照日期记录日志文件
+	if logType == "daily" {
+		logname := time.Now().Format("2006-01-02.log")
+		filename = strings.ReplaceAll(filename, "logs.log", logname)
+	}
+
+	// 滚动日志，详见 config/log.go
+	lumberJackLogger := &lumberjack.Logger{
+		Filename:   filename,
+		MaxSize:    maxSize,
+		MaxBackups: maxBackup,
+		MaxAge:     maxAge,
+		Compress:   compress,
+	}
+	// 配置输出介质
+	if blog.System.Config.Debug {
+		// 本地开发终端打印和记录文件
+		return zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(lumberJackLogger))
 	} else {
-		// 输出到文件时，不使用彩色日志，否则会出现乱码
-		encoder.EncodeLevel = zapcore.CapitalLevelEncoder
-		writeSyncer = ws
-	}
-	// Tips: 如果使用zapcore.NewJSONEncoder
-	// encoderConfig里面就不要配置 EncodeLevel 为zapcore.CapitalColorLevelEncoder或者是
-	// zapcore.LowercaseColorLevelEncoder, 不但日志级别字段不会出现颜色，而且日志级别level字段
-	// 会出现乱码，因为控制颜色的字符也被JSON编码了。
-	return zapcore.NewCore(zapcore.NewConsoleEncoder(encoder),
-		writeSyncer,
-		atomicLevel)
-}
-
-// CustomTimeEncoder 实现了 zapcore.TimeEncoder
-// 实现对日期格式的自定义转换
-func (l *logger) customTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-	format := l.cfg.TimeFormat
-	if len(format) <= 0 {
-		format = blog.TimeLayoutMs
-	}
-	enc.AppendString(t.Format(format))
-}
-
-func (l *logger) newLumber() *lumberjack.Logger {
-	return &lumberjack.Logger{
-		Filename:   l.cfg.FileName,
-		MaxSize:    l.cfg.MaxSize,
-		MaxAge:     l.cfg.MaxAge,
-		MaxBackups: l.cfg.MaxBackups,
-		LocalTime:  l.cfg.LocalTime,
-		Compress:   l.cfg.Compress,
+		// 生产环境只记录文件
+		return zapcore.AddSync(lumberJackLogger)
 	}
 }
 
-func (l *logger) EnabledLevel(level zapcore.Level) bool {
-	return level >= l._level
-}
-
-// DefaultPair 表示接收打印的键值对参数
-type DefaultPair struct {
-	key   string
-	value interface{}
-}
-
-func Pair(key string, v interface{}) DefaultPair {
-	return DefaultPair{
-		key:   key,
-		value: v,
-	}
-}
-
-func spread(kvs ...DefaultPair) []interface{} {
-	s := make([]interface{}, 0, len(kvs))
-	for _, v := range kvs {
-		s = append(s, v.key, v.value)
-	}
-	return s
-}
-
-// Debug 打印debug级别信息
-func Debug(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.DebugLevel) {
-		return
-	}
-	args := spread(kvs...)
-	_logger.sugar.Debugw(message, args...)
-}
-
-// Info 打印info级别信息
-func Info(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.InfoLevel) {
-		return
-	}
-	args := spread(kvs...)
-	_logger.sugar.Infow(message, args...)
-}
-
-// Warn 打印warn级别信息
-func Warn(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.WarnLevel) {
-		return
-	}
-	args := spread(kvs...)
-	_logger.sugar.Warnw(message, args...)
-}
-
-// Error 打印error级别信息
-func Error(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.ErrorLevel) {
-		return
-	}
-	args := spread(kvs...)
-	_logger.sugar.Errorw(message, args...)
-}
-
-// Panic 打印错误信息，然后panic
-func Panic(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.PanicLevel) {
-		return
-	}
-	args := spread(kvs...)
-	_logger.sugar.Panicw(message, args...)
-}
-
-// Fatal 打印错误信息，然后退出
-func Fatal(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.FatalLevel) {
-		return
-	}
-	args := spread(kvs...)
-	_logger.sugar.Fatalw(message, args...)
-}
-
-// Debugf 格式化输出debug级别日志
-func Debugf(template string, args ...interface{}) {
-	_logger.sugar.Debugf(template, args...)
-}
-
-// Infof 格式化输出info级别日志
-func Infof(template string, args ...interface{}) {
-	_logger.sugar.Infof(template, args...)
-}
-
-// Warnf 格式化输出warn级别日志
-func Warnf(template string, args ...interface{}) {
-	_logger.sugar.Warnf(template, args...)
-}
-
-// Errorf 格式化输出error级别日志
-func Errorf(template string, args ...interface{}) {
-	_logger.sugar.Errorf(template, args...)
-}
-
-// Panicf 格式化输出日志，并panic
-func Panicf(template string, args ...interface{}) {
-	_logger.sugar.Panicf(template, args...)
-}
-
-// Fatalf 格式化输出日志，并退出
-func Fatalf(template string, args ...interface{}) {
-	_logger.sugar.Fatalf(template, args...)
-}
-
-// tempLogger 临时的logger
-type tempLogger struct {
-	extra []DefaultPair
-}
-
-// getPrefix 根据extra生成日志前缀，比如 "requestId:%s name:%s "
-func (tl *tempLogger) getPrefix(template string, args []interface{}) ([]interface{}, string) {
-
-	if len(tl.extra) > 0 {
-		var prefix string
-		tmp := make([]interface{}, 0, len(args)+len(tl.extra))
-		for _, pair := range tl.extra {
-			prefix += pair.key + ":%s,"
-			tmp = append(tmp, pair.value)
-		}
-		args = append(tmp, args...)
-		template = prefix + template
-	}
-	return args, template
-}
-
-func (tl *tempLogger) getArgs(kvs []DefaultPair) []interface{} {
-	var args []interface{}
-	if len(tl.extra) > 0 {
-		tl.extra = append(tl.extra, kvs...)
-		args = spread(tl.extra...)
+// Dump 调试专用，不会中断程序，会在终端打印出 warning 消息。
+// 第一个参数会使用 json.Marshal 进行渲染，第二个参数消息（可选）
+//
+//	logger.Dump(user.User{Name:"test"})
+//	logger.Dump(user.User{Name:"test"}, "用户信息")
+func Dump(value interface{}, msg ...string) {
+	valueString := jsonString(value)
+	// 判断第二个参数是否传参 msg
+	if len(msg) > 0 {
+		Logger.Warn("Dump", zap.String(msg[0], valueString))
 	} else {
-		args = spread(kvs...)
+		Logger.Warn("Dump", zap.String("data", valueString))
 	}
-	return args
 }
 
-// RID 实现rid(RequestID打印) 使用格式 log.RID(ctx).Debug(), 可以继续拓展 比如Log.RID(ctx).AppName(ctx).Debug()
-func RID(ctx context.Context) *tempLogger {
-	tl := &tempLogger{extra: make([]DefaultPair, 0)}
-	if ctx == nil {
-		return tl
+// LogIf 当 err != nil 时记录 error 等级的日志
+func LogIf(err error) {
+	if err != nil {
+		Logger.Error("Error Occurred:", zap.Error(err))
 	}
-	if v := ctx.Value(blog.RequestId); v != nil && v != "" {
-		tl.extra = append(tl.extra, Pair(blog.RequestId, v))
+}
+
+// LogWarnIf 当 err != nil 时记录 warning 等级的日志
+func LogWarnIf(err error) {
+	if err != nil {
+		Logger.Warn("Error Occurred:", zap.Error(err))
 	}
-	return tl
 }
 
-func (tl *tempLogger) Debug(message string, kvs ...DefaultPair) {
-	// 这里重复写的原因是zap的log设置的SKIP是1，
-	//并且使用的全局只有一个logger，不能修改SKIP，否则打印的位置不正确，后续都是重复代码
-	// Debug(message, tl.extra...) 这种写法要修改SKIP
-	if !_logger.EnabledLevel(zapcore.DebugLevel) {
-		return
+// LogInfoIf 当 err != nil 时记录 info 等级的日志
+func LogInfoIf(err error) {
+	if err != nil {
+		Logger.Info("Error Occurred:", zap.Error(err))
 	}
-	args := tl.getArgs(kvs)
-	_logger.sugar.Debugw(message, args...)
 }
 
-func (tl *tempLogger) Info(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.InfoLevel) {
-		return
+// Debug 调试日志，详尽的程序日志
+// 调用示例：
+//
+//	logger.Debug("Database", zap.String("sql", sql))
+func Debug(moduleName string, fields ...zap.Field) {
+	Logger.Debug(moduleName, fields...)
+}
+
+// Info 告知类日志
+func Info(moduleName string, fields ...zap.Field) {
+	Logger.Info(moduleName, fields...)
+}
+
+// Warn 警告类
+func Warn(moduleName string, fields ...zap.Field) {
+	Logger.Warn(moduleName, fields...)
+}
+
+// Error 错误时记录，不应该中断程序，查看日志时重点关注
+func Error(moduleName string, fields ...zap.Field) {
+	Logger.Error(moduleName, fields...)
+}
+
+// Fatal 级别同 Error(), 写完 log 后调用 os.Exit(1) 退出程序
+func Fatal(moduleName string, fields ...zap.Field) {
+	Logger.Fatal(moduleName, fields...)
+}
+
+// DebugString 记录一条字符串类型的 debug 日志，调用示例：
+//
+//	logger.DebugString("SMS", "短信内容", string(result.RawResponse))
+func DebugString(moduleName, name, msg string) {
+	Logger.Debug(moduleName, zap.String(name, msg))
+}
+
+func InfoString(moduleName, name, msg string) {
+	Logger.Info(moduleName, zap.String(name, msg))
+}
+
+func WarnString(moduleName, name, msg string) {
+	Logger.Warn(moduleName, zap.String(name, msg))
+}
+
+func ErrorString(moduleName, name, msg string) {
+	Logger.Error(moduleName, zap.String(name, msg))
+}
+
+func FatalString(moduleName, name, msg string) {
+	Logger.Fatal(moduleName, zap.String(name, msg))
+}
+
+// DebugJSON 记录对象类型的 debug 日志，使用 json.Marshal 进行编码。调用示例：
+//
+//	logger.DebugJSON("Auth", "读取登录用户", auth.CurrentUser())
+func DebugJSON(moduleName, name string, value interface{}) {
+	Logger.Debug(moduleName, zap.String(name, jsonString(value)))
+}
+
+func InfoJSON(moduleName, name string, value interface{}) {
+	Logger.Info(moduleName, zap.String(name, jsonString(value)))
+}
+
+func WarnJSON(moduleName, name string, value interface{}) {
+	Logger.Warn(moduleName, zap.String(name, jsonString(value)))
+}
+
+func ErrorJSON(moduleName, name string, value interface{}) {
+	Logger.Error(moduleName, zap.String(name, jsonString(value)))
+}
+
+func FatalJSON(moduleName, name string, value interface{}) {
+	Logger.Fatal(moduleName, zap.String(name, jsonString(value)))
+}
+
+func jsonString(value interface{}) string {
+	b, err := json.Marshal(value)
+	if err != nil {
+		Logger.Error("Logger", zap.String("JSON marshal error", err.Error()))
 	}
-	args := tl.getArgs(kvs)
-	_logger.sugar.Infow(message, args...)
-}
-
-// Warn 打印warn级别信息
-func (tl *tempLogger) Warn(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.WarnLevel) {
-		return
-	}
-	args := tl.getArgs(kvs)
-	_logger.sugar.Warnw(message, args...)
-}
-
-// Error 打印error级别信息
-func (tl *tempLogger) Error(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.ErrorLevel) {
-		return
-	}
-	args := tl.getArgs(kvs)
-	_logger.sugar.Errorw(message, args...)
-}
-
-// Panic 打印错误信息，然后panic
-func (tl *tempLogger) Panic(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.PanicLevel) {
-		return
-	}
-	args := tl.getArgs(kvs)
-	_logger.sugar.Panicw(message, args...)
-}
-
-// Fatal 打印错误信息，然后退出
-func (tl *tempLogger) Fatal(message string, kvs ...DefaultPair) {
-	if !_logger.EnabledLevel(zapcore.FatalLevel) {
-		return
-	}
-	args := tl.getArgs(kvs)
-	_logger.sugar.Fatalw(message, args...)
-}
-
-// Debugf 格式化输出debug级别日志
-func (tl *tempLogger) Debugf(template string, args ...interface{}) {
-	args, template = tl.getPrefix(template, args)
-	_logger.sugar.Debugf(template, args...)
-}
-
-// Infof 格式化输出info级别日志
-func (tl *tempLogger) Infof(template string, args ...interface{}) {
-	args, template = tl.getPrefix(template, args)
-	_logger.sugar.Infof(template, args...)
-}
-
-// Warnf 格式化输出warn级别日志
-func (tl *tempLogger) Warnf(template string, args ...interface{}) {
-	args, template = tl.getPrefix(template, args)
-	_logger.sugar.Warnf(template, args...)
-}
-
-// Errorf 格式化输出error级别日志
-func (tl *tempLogger) Errorf(template string, args ...interface{}) {
-	args, template = tl.getPrefix(template, args)
-	_logger.sugar.Errorf(template, args...)
-}
-
-// Panicf 格式化输出日志，并panic
-func (tl *tempLogger) Panicf(template string, args ...interface{}) {
-	args, template = tl.getPrefix(template, args)
-	_logger.sugar.Panicf(template, args...)
-}
-
-// Fatalf 格式化输出日志，并退出
-func (tl *tempLogger) Fatalf(template string, args ...interface{}) {
-	args, template = tl.getPrefix(template, args)
-	_logger.sugar.Fatalf(template, args...)
-}
-
-// Sync 关闭时需要同步日志到输出
-func Sync() {
-	_ = _logger.sugar.Sync()
+	return string(b)
 }

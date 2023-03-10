@@ -1,0 +1,65 @@
+{{define "default/components/middle_index"}}
+<div class="col-lg-8 col-md-12">
+  <div id="middle">
+    {{template "default/components/middle_header" .}}
+    {{template "default/components/sticky" .}}
+    <div id="article" class="mb-5">
+      <div class="row">
+        <div class="col-12" itemscope itemtype="https://schema.org/NewsArticle">
+          <div class="item d-flex mb-5 justify-content-between position-relative">
+            <div class="content d-flex flex-column justify-content-between position-relative">
+              <div class="title">
+                <a href="https://www.liaocp.cn/archives/247.html" title="Jasmine - 简约、美观的博客主题">
+                  <h2 class="fs-5" itemprop="headline">
+                    Jasmine - 简约、美观的博客主题 </h2>
+                </a>
+              </div>
+              <div class="excerpt" itemprop="abstract">
+                <p>🌼 Jasmine，一款 Typecho 主题。专为博客类网站开发，响应式设计，在移动端也有不错体验。主要使用白、灰、黑三种配色，整体简洁、精致、美观。</p>
+              </div>
+              <div class="meta d-flex justify-content-between position-relative">
+                <div class="left">
+                  <span>
+                    <a href="https://www.liaocp.cn/category/development/">技术</a>
+                  </span>
+                  <span class="middotDivider"></span>
+                  <span>29 天前</span>
+                </div>
+                <span class="d-none" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                  <meta itemprop="url" content="https://www.liaocp.cn/author/1/"/>
+                  <a itemprop="url" href="https://www.liaocp.cn/author/1/">
+                    <span itemprop="name">南巷清风</span>
+                  </a>
+                </span>
+<!--                <span class="d-none" itemprop="author" itemscope itemtype="https://schema.org/Person">-->
+<!--                                    <meta itemprop="url" content="<?php $this->author->permalink(); ?>"/>-->
+<!--                                    <a itemprop="url" href="<?php $this->author->permalink(); ?>">-->
+<!--                                        <span itemprop="name"><?php $this->author->screenName(); ?></span>-->
+<!--                                    </a>-->
+<!--                                </span>-->
+              </div>
+            </div>
+<!--            <div class="thumbnail d-none d-lg-block">-->
+<!--              <meta itemprop="image" content="<?php echo $thumbnail; ?>" />-->
+<!--              <a href="" title="<?php $this->title() ?>">-->
+<!--                <img width="170" height="130" src="<?php echo $thumbnail; ?>" alt="<?php $this->title() ?>">-->
+<!--              </a>-->
+<!--            </div>-->
+            <div class="thumbnail d-none d-lg-block">
+              <meta itemprop="image" content="https://www.liaocp.cn/usr/uploads/2023/02/3899630732.webp" />
+              <a href="" title="车站最感人的两个地方：出口与入口">
+                <img width="170" height="130" src="https://www.liaocp.cn/usr/uploads/2023/02/3899630732.webp" alt="车站最感人的两个地方：出口与入口">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="pagination" class="mb-5">
+      <nav aria-label="Page navigation">
+<!--        <?php $this->pageNav('‹', '›',1,'...',array('wrapTag' => 'ul', 'wrapClass' => 'pagination justify-content-center','itemTag' => 'li','currentClass' => 'page-current',)); ?>-->
+      </nav>
+    </div>
+  </div>
+</div>
+{{end}}

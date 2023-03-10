@@ -1,0 +1,26 @@
+{{define "default/header"}}
+<!DOCTYPE html>
+<html lang="{{.Tr.Locale}}">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/cactus/images/logo.png?20211213">
+    <link href="https://cdn.staticfile.org/bootstrap/5.2.3/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="https://cdn.staticfile.org/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" type="text/css" rel="stylesheet"/>
+    <link href="/static/prism/prism.css" type="text/css" rel="stylesheet">
+    <link href="/static/jasmine/jasmine.css" type="text/css" rel="stylesheet">
+    <title>{{.Title}}</title>
+    <meta name="description" content="{{.Desc}}">
+    <meta name="keywords" content="{{.Keywords}}">
+</head>
+
+<body>
+<div id="layout">
+    <div class="container">
+        <div class="layout-wrap">
+            <div class="row g-0">
+
+            {{end}}

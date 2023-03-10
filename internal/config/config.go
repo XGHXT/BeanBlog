@@ -23,8 +23,7 @@ type LogConfig struct {
 	MaxBackups int
 	MaxAge     int
 	Compress   bool
-	LocalTime  bool
-	Console    bool
+	LogType    string
 }
 
 // Config 系统配置

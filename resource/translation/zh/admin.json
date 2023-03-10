@@ -1,0 +1,322 @@
+[
+    {
+        "locale": "zh",
+        "key": "home",
+        "trans": "首页"
+    },
+    {
+        "locale": "zh",
+        "key": "login",
+        "trans": "登录"
+    },
+    {
+        "locale": "zh",
+        "key": "remember_me",
+        "trans": "记住我"
+    },
+    {
+        "locale": "zh",
+        "key": "sign_in",
+        "trans": "登录"
+    },
+    {
+        "locale": "zh",
+        "key": "password",
+        "trans": "密码"
+    },
+    {
+        "locale": "zh",
+        "key": "manage_articles",
+        "trans": "管理文章"
+    },
+    {
+        "locale": "zh",
+        "key": "manage_tags",
+        "trans": "管理标签"
+    },
+    {
+        "locale": "zh",
+        "key": "tags",
+        "trans": "标签"
+    },
+    {
+        "locale": "zh",
+        "key": "title",
+        "trans": "标题"
+    },
+    {
+        "locale": "zh",
+        "key": "read",
+        "trans": "阅读"
+    },
+    {
+        "locale": "zh",
+        "key": "slug",
+        "trans": "链接"
+    },
+    {
+        "locale": "zh",
+        "key": "created_at",
+        "trans": "发布时间"
+    },
+    {
+        "locale": "zh",
+        "key": "manage",
+        "trans": "管理"
+    },
+    {
+        "locale": "zh",
+        "key": "edit",
+        "trans": "编辑"
+    },
+    {
+        "locale": "zh",
+        "key": "delete",
+        "trans": "删除"
+    },
+    {
+        "locale": "zh",
+        "key": "previous",
+        "trans": "上一页"
+    },
+    {
+        "locale": "zh",
+        "key": "next",
+        "trans": "下一页"
+    },
+    {
+        "locale": "zh",
+        "key": "manage_comments",
+        "trans": "管理评论"
+    },
+    {
+        "locale": "zh",
+        "key": "content",
+        "trans": "内容"
+    },
+    {
+        "locale": "zh",
+        "key": "author",
+        "trans": "作者"
+    },
+    {
+        "locale": "zh",
+        "key": "article",
+        "trans": "文章"
+    },
+    {
+        "locale": "zh",
+        "key": "articles",
+        "trans": "文章"
+    },
+    {
+        "locale": "zh",
+        "key": "version",
+        "trans": "版本"
+    },
+    {
+        "locale": "zh",
+        "key": "sign_out",
+        "trans": "注销登录"
+    },
+    {
+        "locale": "zh",
+        "key": "publish",
+        "trans": "发布"
+    },
+    {
+        "locale": "zh",
+        "key": "media",
+        "trans": "文件"
+    },
+    {
+        "locale": "zh",
+        "key": "manage_media",
+        "trans": "管理文件"
+    },
+    {
+        "locale": "zh",
+        "key": "dashboard",
+        "trans": "仪表盘"
+    },
+    {
+        "locale": "zh",
+        "key": "days_left_from_the_last_post",
+        "trans": "距离上次发布文章的天数"
+    },
+    {
+        "locale": "zh",
+        "key": "days_left_from_the_last_comment",
+        "trans": "距离上次收到评论的天数"
+    },
+    {
+        "locale": "zh",
+        "key": "labels",
+        "trans": "标签"
+    },
+    {
+        "locale": "zh",
+        "key": "memory_usage",
+        "trans": "内存占用"
+    },
+    {
+        "locale": "zh",
+        "key": "gc_num",
+        "trans": "内存回收次数"
+    },
+    {
+        "locale": "zh",
+        "key": "routine_num",
+        "trans": "运行中协程数量"
+    },
+    {
+        "locale": "zh",
+        "key": "rebuild_fulltext_search_data",
+        "trans": "重建全文搜索数据"
+    },
+    {
+        "locale": "zh",
+        "key": "filename",
+        "trans": "文件名"
+    },
+    {
+        "locale": "zh",
+        "key": "uploaded_at",
+        "trans": "上传时间"
+    },
+    {
+        "locale": "zh",
+        "key": "publish_article",
+        "trans": "发布文章"
+    },
+    {
+        "locale": "zh",
+        "key": "book_refer",
+        "trans": "专栏ID"
+    },
+    {
+        "locale": "zh",
+        "key": "its_a_book",
+        "trans": "这是专栏"
+    },
+    {
+        "locale": "zh",
+        "key": "new_version",
+        "trans": "大更新"
+    },
+    {
+        "locale": "zh",
+        "key": "site_settings",
+        "trans": "配置"
+    },
+    {
+        "locale": "zh",
+        "key": "site_title",
+        "trans": "站点标题"
+    },
+    {
+        "locale": "zh",
+        "key": "site_desc",
+        "trans": "站点说明"
+    },
+    {
+        "locale": "zh",
+        "key": "site_wxpusher_apptoken",
+        "trans": "WxPusher AppToken"
+    },
+    {
+        "locale": "zh",
+        "key": "site_wxpusher_uid",
+        "trans": "WxPusher UID"
+    },
+    {
+        "locale": "zh",
+        "key": "site_mail_server",
+        "trans": "发信服务器"
+    },
+    {
+        "locale": "zh",
+        "key": "site_mail_port",
+        "trans": "服务器端口"
+    },
+    {
+        "locale": "zh",
+        "key": "site_mail_user",
+        "trans": "发信用户名"
+    },
+    {
+        "locale": "zh",
+        "key": "site_mail_pass",
+        "trans": "发信密码"
+    },
+    {
+        "locale": "zh",
+        "key": "site_mail_ssl",
+        "trans": "SMTP SSL"
+    },
+    {
+        "locale": "zh",
+        "key": "site_home_top_content",
+        "trans": "首页顶部内容"
+    },
+    {
+        "locale": "zh",
+        "key": "site_home_bottom_content",
+        "trans": "首页底部内容"
+    },
+    {
+        "locale": "zh",
+        "key": "site_theme",
+        "trans": "站点主题"
+    },
+    {
+        "locale": "zh",
+        "key": "site_akismet",
+        "trans": "Akismet"
+    },
+    {
+        "locale": "zh",
+        "key": "site_domain",
+        "trans": "站点域名"
+    },
+    {
+        "locale": "zh",
+        "key": "site_header_menus",
+        "trans": "顶部菜单"
+    },
+    {
+        "locale": "zh",
+        "key": "site_footer_menus",
+        "trans": "页脚菜单"
+    },
+    {
+        "locale": "zh",
+        "key": "site_keywords",
+        "trans": "站点关键字"
+    },
+    {
+        "locale": "zh",
+        "key": "save",
+        "trans": "保存"
+    },
+    {
+        "locale": "zh",
+        "key": "old_password",
+        "trans": "旧密码"
+    },
+    {
+        "locale": "zh",
+        "key": "new_password",
+        "trans": "新密码"
+    },
+    {
+        "locale": "zh",
+        "key": "confirm_password",
+        "trans": "确认密码"
+    },
+    {
+        "locale": "zh",
+        "key": "input_password_if_you_want_change_it",
+        "trans": "如果您想修改密码，输入您的旧密码"
+    }
+]
