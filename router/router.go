@@ -2,10 +2,10 @@ package router
 
 import (
 	"BeanBlog/pkg/blog"
+	"BeanBlog/pkg/log"
 	"BeanBlog/pkg/trans"
 	gv "github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
-	"log"
 	"net/http"
 	"sync"
 )
@@ -13,6 +13,8 @@ import (
 var validator = gv.New()
 
 func RegisterRoutes(app *fiber.App) {
+	app.Static("/static", "resource/static")
+
 	//app.Get("/", page404)
 	//app.Get("/feed/:format?", feedHandler)
 	//app.Get("/archives/:page?", archive)
@@ -22,7 +24,7 @@ func RegisterRoutes(app *fiber.App) {
 
 	app.Get("/login", guestRequired, login)
 	app.Post("/login", guestRequired, loginHandler)
-	//app.Post("/logout", loginRequired, logoutHandler)
+	app.Post("/logout", loginRequired, logoutHandler)
 	//app.Post("/count", count)
 	//app.Post("/comment", commentHandler)
 	//app.Static("/static", "resource/static")
@@ -30,22 +32,22 @@ func RegisterRoutes(app *fiber.App) {
 
 	admin := app.Group("/admin", loginRequired)
 	admin.Get("/", manager)
-	//admin.Get("/publish", publish)
-	//admin.Post("/publish", publishHandler)
+	admin.Get("/publish", publish)
+	admin.Post("/publish", publishHandler)
 	//admin.Get("/rebuild-full-text-search", rebuildFullTextSearch)
 	//admin.Post("/upload", upload)
 	//admin.Post("/fetch", fetch)
-	//admin.Get("/comments", comments)
-	//admin.Delete("/comments", deleteComment)
-	//admin.Get("/articles", manageArticle)
-	//admin.Delete("/articles", deleteArticle)
+	admin.Get("/comments", comments)
+	admin.Delete("/comments", deleteComment)
+	admin.Get("/articles", manageArticle)
+	admin.Delete("/articles", deleteArticle)
 	//admin.Get("/media", media)
 	//admin.Delete("/media", mediaHandler)
-	//admin.Get("/settings", settings)
-	//admin.Post("/settings", settingsHandler)
-	//admin.Get("/tags", tagsManagePage)
-	//admin.Delete("/tags", deleteTag)
-	//admin.Patch("/tags", renameTag)
+	admin.Get("/settings", settings)
+	admin.Post("/settings", settingsHandler)
+	admin.Get("/tags", tagsManagePage)
+	admin.Delete("/tags", deleteTag)
+	admin.Patch("/tags", renameTag)
 
 	app.Use(page404)
 }
@@ -76,13 +78,14 @@ func loginRequired(c *fiber.Ctx) error {
 
 func checkPoolSubmit(wg *sync.WaitGroup, err error) {
 	if err != nil {
-		log.Println(err)
+		log.Error(err.Error())
 		if wg != nil {
 			wg.Done()
 		}
 	}
 }
 
+// injectSiteData 渲染数据
 func injectSiteData(c *fiber.Ctx, data fiber.Map) fiber.Map {
 	var title, keywords, desc string
 

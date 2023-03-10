@@ -3,7 +3,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            {{.Tr.T "dashboard"}}
+            控制面板
         </h1>
     </section>
 
@@ -13,7 +13,7 @@
                 <div class="small-box bg-aqua">
                     <div class="inner">
                         <h3>{{.Data.articleNum}}</h3>
-                        <p>{{.Tr.T "articles"}}</p>
+                        <p>文章数</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-newspaper-o"></i>
@@ -24,7 +24,7 @@
                 <div class="small-box bg-purple">
                     <div class="inner">
                         <h3>{{.Data.lastArticlePublish}} </h3>
-                        <p>{{.Tr.T "days_left_from_the_last_post"}}</p>
+                        <p>距离上次发布文章的天数</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-clock-o"></i>
@@ -35,7 +35,7 @@
                 <div class="small-box bg-aqua">
                     <div class="inner">
                         <h3>{{.Data.commentNum}}</h3>
-                        <p>{{.Tr.T "comments"}}</p>
+                        <p>评论数</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-comments-o"></i>
@@ -46,7 +46,7 @@
                 <div class="small-box bg-purple">
                     <div class="inner">
                         <h3>{{.Data.lastComment}}</h3>
-                        <p>{{.Tr.T "days_left_from_the_last_comment"}}</p>
+                        <p>距离上次收到评论的天数</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-clock-o"></i>
@@ -59,7 +59,7 @@
                 <div class="small-box bg-lime-active">
                     <div class="inner">
                         <h3>{{.Data.tagNum}}</h3>
-                        <p>{{.Tr.T "labels"}}</p>
+                        <p>标签数</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-tags"></i>
@@ -70,7 +70,7 @@
                 <div class="small-box bg-navy">
                     <div class="inner">
                         <h3>{{.Data.memoryUsage}} M</h3>
-                        <p>{{.Tr.T "memory_usage"}}</p>
+                        <p>内存占用</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-file-o"></i>
@@ -81,7 +81,7 @@
                 <div class="small-box bg-maroon">
                     <div class="inner">
                         <h3>{{.Data.gcNum}}</h3>
-                        <p>{{.Tr.T "gc_num"}}</p>
+                        <p>内存回收次数</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-trash-o"></i>
@@ -92,7 +92,7 @@
                 <div class="small-box bg-teal">
                     <div class="inner">
                         <h3>{{.Data.routineNum}}</h3>
-                        <p>{{.Tr.T "routine_num"}}</p>
+                        <p>运行中协程数量</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-meh-o"></i>
@@ -100,22 +100,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-3 col-xs-6">
-                <button onclick="rebuildFullTextSearch()"
-                    class="btn btn-danger btn-lg">{{.Tr.T "rebuild_fulltext_search_data"}}</button>
-            </div>
-        </div>
+
     </section>
 </div>
-<script>
-    function rebuildFullTextSearch() {
-        if (confirm('Rebuild full-text search data?')) {
-            $.get("/admin/rebuild-full-text-search").done(() => {
-                alert("Rebuild successful")
-            })
-        }
-    }
-</script>
 {{template "admin/footer" .}}
 {{end}}

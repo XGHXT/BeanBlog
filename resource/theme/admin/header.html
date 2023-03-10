@@ -17,8 +17,8 @@
     <div class="wrapper">
         <header class="main-header">
             <a href="/admin/" class="logo">
-                <span class="logo-mini"><b>S</b>E</span>
-                <span class="logo-lg"><b>Solitudes</b>Engine</span>
+                <span class="logo-mini"><b>B</b>B</span>
+                <span class="logo-lg"><b>Bean</b>Blog</span>
             </a>
             <nav class="navbar navbar-static-top" role="navigation">
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
@@ -30,7 +30,7 @@
                             <!-- Menu Toggle Button -->
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <!-- The user image in the navbar-->
-                                <img src="/static/cactus/images/logo.png?20211213" class="user-image" alt="User Image">
+                                <img src="https://qiniu.yesok.space/static/img/avatar.png" class="user-image" alt="头像">
                                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
                                 <span class="hidden-xs">{{.Conf.User.Nickname}}</span>
                             </a>
@@ -38,7 +38,7 @@
                                 <li class="user-footer">
                                     <form method="POST" action="/logout">
                                         <button type="submit"
-                                            class="btn btn-default btn-flat">{{.Tr.T "sign_out"}}</button>
+                                            class="btn btn-default btn-flat">退出登录</button>
                                     </form>
                                 </li>
                             </ul>
@@ -49,27 +49,16 @@
         </header>
         <aside class="main-sidebar">
             <section class="sidebar">
-                <div class="user-panel">
-                    <div class="pull-left image">
-                        <img src="/static/cactus/images/logo.png?20211213" class="img-circle" alt="User Image">
-                    </div>
-                    <div class="pull-left info">
-                        <p>{{.Conf.User.Nickname}}</p>
-                        <!-- Status -->
-                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-                    </div>
-                </div>
 
                 <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">Your Blog</li>
-                    <li><a href="/admin/publish"><i class="fa fa-plus"></i> <span>{{.Tr.T "publish"}}</span></a></li>
+                    <li class="header">选项</li>
+                    <li><a href="/admin/publish"><i class="fa fa-plus"></i> <span>文章新建</span></a></li>
                     <li><a href="/admin/articles"><i class="fa fa-newspaper-o"></i>
-                            <span>{{.Tr.T "articles"}}</span></a>
+                            <span>文章管理</span></a>
                     </li>
-                    <li><a href="/admin/media"><i class="fa fa-folder-open"></i> <span>{{.Tr.T "media"}}</span></a></li>
-                    <li><a href="/admin/comments"><i class="fa fa-comments-o"></i> <span>{{.Tr.T "comments"}}</span></a>
-                    <li><a href="/admin/tags"><i class="fa fa-tag"></i> <span>{{.Tr.T "tags"}}</span></a>
-                    <li><a href="/admin/settings"><i class="fa fa-cogs"></i> <span>{{.Tr.T "site_settings"}}</span></a>
+                    <li><a href="/admin/comments"><i class="fa fa-comments-o"></i> <span>评论管理</span></a>
+                    <li><a href="/admin/tags"><i class="fa fa-tag"></i> <span>标签管理</span></a>
+                    <li><a href="/admin/settings"><i class="fa fa-cogs"></i> <span>基本设置</span></a>
                     </li>
                 </ul>
             </section>
