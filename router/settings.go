@@ -18,27 +18,24 @@ func settings(c *fiber.Ctx) error {
 }
 
 type settingsRequest struct {
-	SiteTitle             string `json:"site_title,omitempty"`
-	SiteDesc              string `json:"site_desc,omitempty"`
-	WxpusherAppToken      string `json:"wxpusher_app_token,omitempty"`
-	WxpusherUID           string `json:"wxpusher_uid,omitempty"`
-	MailServer            string `json:"mail_server,omitempty"`
-	MailPort              int    `json:"mail_port,omitempty"`
-	MailUser              string `json:"mail_user,omitempty"`
-	MailPassword          string `json:"mail_password,omitempty"`
-	MailSSL               bool   `json:"mail_ssl,omitempty"`
-	Akismet               string `json:"akismet,omitempty"`
-	SiteDomain            string `json:"site_domain,omitempty"`
-	SiteKeywords          string `json:"site_keywords,omitempty"`
-	SiteHeaderMenus       string `json:"site_header_menus,omitempty"`
-	SiteFooterMenus       string `json:"site_footer_menus,omitempty"`
-	SiteTheme             string `json:"site_theme,omitempty"`
-	SiteHomeTopContent    string `json:"site_home_top_content,omitempty"`
-	SiteHomeBottomContent string `json:"site_home_bottom_content,omitempty"`
-	Email                 string `json:"email,omitempty" validate:"email"`
-	Nickname              string `json:"nickname,omitempty" validate:"trim"`
-	OldPassword           string `json:"old_password,omitempty" validate:"trim"`
-	NewPassword           string `json:"new_password,omitempty" validate:"trim"`
+	SiteTitle        string `json:"site_title,omitempty"`
+	SiteDesc         string `json:"site_desc,omitempty"`
+	WxpusherAppToken string `json:"wxpusher_app_token,omitempty"`
+	WxpusherUID      string `json:"wxpusher_uid,omitempty"`
+	MailServer       string `json:"mail_server,omitempty"`
+	MailPort         int    `json:"mail_port,omitempty"`
+	MailUser         string `json:"mail_user,omitempty"`
+	MailPassword     string `json:"mail_password,omitempty"`
+	MailSSL          bool   `json:"mail_ssl,omitempty"`
+	Akismet          string `json:"akismet,omitempty"`
+	SiteDomain       string `json:"site_domain,omitempty"`
+	SiteKeywords     string `json:"site_keywords,omitempty"`
+	SiteHeaderMenus  string `json:"site_header_menus,omitempty"`
+	SiteFooterMenus  string `json:"site_footer_menus,omitempty"`
+	Email            string `json:"email,omitempty" validate:"email"`
+	Nickname         string `json:"nickname,omitempty" validate:"trim"`
+	OldPassword      string `json:"old_password,omitempty" validate:"trim"`
+	NewPassword      string `json:"new_password,omitempty" validate:"trim"`
 }
 
 func settingsHandler(c *fiber.Ctx) error {
@@ -72,9 +69,6 @@ func settingsHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	blog.System.Config.Site.Theme = sr.SiteTheme
-	blog.System.Config.Site.HomeTopContent = sr.SiteHomeTopContent
-	blog.System.Config.Site.HomeBottomContent = sr.SiteHomeBottomContent
 
 	if len(sr.OldPassword) > 0 && len(sr.NewPassword) > 0 {
 		if bcrypt.CompareHashAndPassword([]byte(blog.System.Config.User.Password), []byte(sr.OldPassword)) != nil {

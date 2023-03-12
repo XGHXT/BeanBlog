@@ -3,7 +3,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            {{.Tr.T "publish_article"}}
+            文章发布
         </h1>
     </section>
 
@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputTitle" class="col-sm-2 control-label">{{.Tr.T "title"}}</label>
+                        <label for="inputTitle" class="col-sm-2 control-label">标题</label>
                         <div class="col-sm-10">
                             <input type="hidden" id="inputID" value="{{.Data.article.ID}}">
                             <input class="form-control" id="inputTitle" placeholder="Title"
@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputSlug" class="col-sm-2 control-label">{{.Tr.T "slug"}}</label>
+                        <label for="inputSlug" class="col-sm-2 control-label">链接</label>
                         <div class="col-sm-10">
                             <input class="form-control" id="inputSlug" placeholder="URL slug"
                                 value="{{.Data.article.Slug}}">
@@ -31,7 +31,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputTags" class="col-sm-2 control-label">{{.Tr.T "labels"}}</label>
+                        <label for="inputTags" class="col-sm-2 control-label">标签</label>
                         <div class="col-sm-10">
                             <input class="form-control" id="inputTags" placeholder="dev,golang,docker"
                                 value="{{.Data.article.RawTags}}">
@@ -53,7 +53,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputCID" class="col-sm-2 control-label">{{.Tr.T "book_refer"}}</label>
+                        <label for="inputCID" class="col-sm-2 control-label">专栏ID</label>
                         <div class="col-sm-10">
                             <input class="form-control" id="inputCID"
                                 value="{{if .Data.article.BookRefer}}{{.Data.article.BookRefer}}{{end}}">
@@ -66,7 +66,7 @@
                             <div class="checkbox">
                                 <label>
                                     <input{{if .Data.article.IsBook}} checked{{end}} id="cbBook" type="checkbox">
-                                        {{.Tr.T "its_a_book"}}
+                                    这是专栏
                                 </label>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                             <div class="checkbox">
                                 <label>
                                     <input{{if .Data.article.IsPrivate}} checked{{end}} id="cbPrivate" type="checkbox">
-                                        Private
+                                        私密
                                 </label>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                                <input id="cbNewVersion" type="checkbox"> {{.Tr.T "new_version"}}
+                                <input id="cbNewVersion" type="checkbox"> 大更新
                             </label>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
         <div id="editSection"></div>
         <div class="row" style="margin-top:10px;">
             <div class="col-xs-6 col-md-2">
-                <button onclick="publish(this)" class="btn btn-lg btn-primary">{{.Tr.T "publish"}}</button>
+                <button onclick="publish(this)" class="btn btn-lg btn-primary">发布</button>
             </div>
         </div>
     </section>
@@ -112,11 +112,6 @@
     const vditor = new Vditor('editSection', {
         after() {
             vditor.setValue('{{.Data.article.Content}}')
-        },
-        upload: {
-            accept: 'image/*,.mp4,.rar,.zip,.wav,.mp3',
-            url: '/admin/upload',
-            linkToImgUrl: '/admin/fetch',
         },
     })
     function publish(btn) {

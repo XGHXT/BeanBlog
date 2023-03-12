@@ -47,15 +47,12 @@ type Config struct {
 		SSL  bool
 	}
 	Site struct {
-		SpaceName         string
-		SpaceDesc         string
-		SpaceKeywords     string
-		HomeTopContent    string
-		HomeBottomContent string
-		Domain            string
-		Theme             string
-		HeaderMenus       []Menu
-		FooterMenus       []Menu
+		SpaceName     string
+		SpaceDesc     string
+		SpaceKeywords string
+		Domain        string
+		HeaderMenus   []Menu
+		FooterMenus   []Menu
 	}
 
 	User           model.User

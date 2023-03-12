@@ -3,7 +3,7 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            {{.Tr.T "site_settings"}}
+            站点设置
         </h1>
     </section>
     <section class="content container-fluid">
@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputSiteTitle" class="col-sm-3 control-label">{{.Tr.T "site_title"}}</label>
+                        <label for="inputSiteTitle" class="col-sm-3 control-label">站点标题</label>
                         <div class="col-sm-9">
                             <input type="hidden" id="inputID" value="{{.Data.article.ID}}">
                             <input class="form-control" id="inputSiteTitle" placeholder="Solitudes"
@@ -23,7 +23,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputSiteDesc" class="col-sm-3 control-label">{{.Tr.T "site_desc"}}</label>
+                        <label for="inputSiteDesc" class="col-sm-3 control-label">站点说明</label>
                         <div class="col-sm-9">
                             <textarea class="form-control" id="inputSiteDesc"
                                 placeholder="We love writing">{{.Conf.Site.SpaceDesc}}</textarea>
@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputWxpusherAppToken" class="col-sm-3 control-label">{{.Tr.T "site_wxpusher_apptoken"}}</label>
+                        <label for="inputWxpusherAppToken" class="col-sm-3 control-label">WxPusher AppToken</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputWxpusherAppToken" placeholder="xxxxxxxxxxxxx"
                                 value="{{.Conf.WxpusherAppToken}}">
@@ -45,7 +45,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputWxpusherUID" class="col-sm-3 control-label">{{.Tr.T "site_wxpusher_uid"}}</label>
+                        <label for="inputWxpusherUID" class="col-sm-3 control-label">WxPusher UID</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputWxpusherUID" placeholder="xxxxxxxxxxxxx"
                                 value="{{.Conf.WxpusherUID}}">
@@ -56,7 +56,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputMailServer" class="col-sm-3 control-label">{{.Tr.T "site_mail_server"}}</label>
+                        <label for="inputMailServer" class="col-sm-3 control-label">发信服务器</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputMailServer" placeholder="smtp.163.com"
                                 value="{{.Conf.Email.Host}}">
@@ -67,7 +67,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputMailPort" class="col-sm-3 control-label">{{.Tr.T "site_mail_port"}}</label>
+                        <label for="inputMailPort" class="col-sm-3 control-label">服务器端口</label>
                         <div class="col-sm-9">
                             <input class="form-control" type="number" id="inputMailPort" placeholder="25"
                                 value="{{.Conf.Email.Port}}">
@@ -80,7 +80,7 @@
                             <div class="cbMailSSL">
                                 <label>
                                     <input{{if .Conf.Email.SSL}} checked{{end}} id="cbMailSSL" type="checkbox">
-                                        {{.Tr.T "site_mail_ssl"}}
+                                        开启SSL
                                 </label>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputMailUser" class="col-sm-3 control-label">{{.Tr.T "site_mail_user"}}</label>
+                        <label for="inputMailUser" class="col-sm-3 control-label">发信用户名</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputMailUser" placeholder="username"
                                 value="{{.Conf.Email.User}}">
@@ -101,7 +101,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputMailPass" class="col-sm-3 control-label">{{.Tr.T "site_mail_pass"}}</label>
+                        <label for="inputMailPass" class="col-sm-3 control-label">发信密码</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputMailPass" placeholder="password"
                                 value="{{.Conf.Email.Pass}}">
@@ -112,7 +112,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputAkismet" class="col-sm-3 control-label">{{.Tr.T "site_akismet"}}</label>
+                        <label for="inputAkismet" class="col-sm-3 control-label">Akismet</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputAkismet" placeholder="Akismet key"
                                 value="{{.Conf.Akismet}}">
@@ -123,7 +123,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputSiteDomain" class="col-sm-3 control-label">{{.Tr.T "site_domain"}}</label>
+                        <label for="inputSiteDomain" class="col-sm-3 control-label">站点域名</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputSiteDomain" placeholder="example.com"
                                 value="{{.Conf.Site.Domain}}">
@@ -134,7 +134,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputSiteKeywords" class="col-sm-3 control-label">{{.Tr.T "site_keywords"}}</label>
+                        <label for="inputSiteKeywords" class="col-sm-3 control-label">站点关键字</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputSiteKeywords" placeholder="blog,programming"
                                 value="{{.Conf.Site.SpaceKeywords}}">
@@ -146,7 +146,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="inputSiteHeaderMenus"
-                            class="col-sm-3 control-label">{{.Tr.T "site_header_menus"}}</label>
+                            class="col-sm-3 control-label">顶部菜单</label>
                         <div class="col-sm-9">
                             <textarea class="form-control"
                                 id="inputSiteHeaderMenus">{{.Conf.Site.HeaderMenus|json}}</textarea>
@@ -158,7 +158,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="inputSiteFooterMenus"
-                            class="col-sm-3 control-label">{{.Tr.T "site_footer_menus"}}</label>
+                            class="col-sm-3 control-label">页脚菜单</label>
                         <div class="col-sm-9">
                             <textarea class="form-control"
                                 id="inputSiteFooterMenus">{{.Conf.Site.FooterMenus|json}}</textarea>
@@ -169,44 +169,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="selTheme" class="col-sm-3 control-label">{{.Tr.T "site_theme"}}</label>
-                        <div class="col-sm-9">
-                            <select id="selTheme" class="form-control">
-                                <option value="dark">dark</option>
-                                <option value="classic">classic</option>
-                                <option value="light">light</option>
-                                <option value="white">white</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="inputHomeTop"
-                            class="col-sm-2 control-label">{{.Tr.T "site_home_top_content"}}</label>
-                        <div class="col-sm-10">
-                            <div id="inputHomeTop"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="inputHomeBottom"
-                            class="col-sm-2 control-label">{{.Tr.T "site_home_bottom_content"}}</label>
-                        <div class="col-sm-10">
-                            <div id="inputHomeBottom"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="inputNickname" class="col-sm-3 control-label">{{.Tr.T "nickname"}}</label>
+                        <label for="inputNickname" class="col-sm-3 control-label">昵称</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputNickname" value="{{.Conf.User.Nickname}}">
                         </div>
@@ -216,7 +179,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputEmail" class="col-sm-3 control-label">{{.Tr.T "email"}}</label>
+                        <label for="inputEmail" class="col-sm-3 control-label">邮箱</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputEmail" value="{{.Conf.User.Email}}">
                         </div>
@@ -226,20 +189,20 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputOldPassword" class="col-sm-3 control-label">{{.Tr.T "old_password"}}</label>
+                        <label for="inputOldPassword" class="col-sm-3 control-label">旧密码</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputOldPassword">
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    {{.Tr.T "input_password_if_you_want_change_it"}}
+                    如果您想修改密码，输入您的旧密码
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="inputNewPassword" class="col-sm-3 control-label">{{.Tr.T "new_password"}}</label>
+                        <label for="inputNewPassword" class="col-sm-3 control-label">新密码</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputNewPassword">
                         </div>
@@ -250,7 +213,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="inputConfirmPassword"
-                            class="col-sm-3 control-label">{{.Tr.T "confirm_password"}}</label>
+                            class="col-sm-3 control-label">确认密码</label>
                         <div class="col-sm-9">
                             <input class="form-control" id="inputConfirmPassword">
                         </div>
@@ -261,7 +224,7 @@
         <div id="editSection"></div>
         <div class="row" style="margin-top:10px;">
             <div class="col-xs-6 col-md-2">
-                <button onclick="saveSetting(this)" class="btn btn-lg btn-primary">{{.Tr.T "save"}}</button>
+                <button onclick="saveSetting(this)" class="btn btn-lg btn-primary">保存</button>
             </div>
         </div>
     </section>
@@ -272,26 +235,6 @@
 <!-- End Vditor -->
 <script>
     window.onbeforeunload = function (e) { var e = e || window.event; if (e) { e.returnValue = '请确保编辑内容已妥善保存'; } return '请确保编辑内容已妥善保存'; };
-    const inputHomeTop = new Vditor('inputHomeTop', {
-        after() {
-            inputHomeTop.setValue('{{.Conf.Site.HomeTopContent}}')
-        },
-        upload: {
-            accept: 'image/*,.mp4,.rar,.zip',
-            url: '/admin/upload',
-            linkToImgUrl: '/admin/fetch',
-        },
-    })
-    const inputHomeBottom = new Vditor('inputHomeBottom', {
-        after() {
-            inputHomeBottom.setValue('{{.Conf.Site.HomeBottomContent}}')
-        },
-        upload: {
-            accept: 'image/*,.mp4,.rar,.zip',
-            url: '/admin/upload',
-            linkToImgUrl: '/admin/fetch',
-        },
-    })
     function saveSetting(btn) {
         if ($(btn).hasClass("disabled")) {
             return
@@ -326,9 +269,6 @@
             site_keywords: $("#inputSiteKeywords").val(),
             site_header_menus: $("#inputSiteHeaderMenus").val(),
             site_footer_menus: $("#inputSiteFooterMenus").val(),
-            site_theme: $("#selTheme").val(),
-            site_home_top_content: inputHomeTop.getValue(),
-            site_home_bottom_content: inputHomeBottom.getValue(),
             nickname: $("#inputNickname").val(),
             email: $("#inputEmail").val(),
             old_password: oldPassword,
