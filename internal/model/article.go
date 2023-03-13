@@ -41,7 +41,7 @@ type Article struct {
 	TemplateID byte           `form:"template" validate:"required"`
 	IsBook     bool           `form:"is_book"`
 	RawTags    string         `form:"tags" gorm:"-"`
-	Tags       pq.StringArray `gorm:"type:json" validate:"-" form:"-"`
+	Tags       pq.StringArray `gorm:"json" validate:"-" form:"-"`
 	ReadNum    uint           `gorm:"default:0;"`
 	CommentNum uint           `gorm:"default:0;"`
 	Version    uint           `gorm:"default:1;"`
